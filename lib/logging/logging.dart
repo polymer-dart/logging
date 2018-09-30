@@ -26,4 +26,8 @@ class Logger {
  severe(String message,[arg1,arg2,arg3,arg4]) {
    print(message);
  }
+
+ finest(String message,[arg1,arg2,arg3,arg4]) {
+   print(message);
+ }
 }

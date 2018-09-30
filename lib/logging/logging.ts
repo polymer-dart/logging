@@ -34,6 +34,9 @@ export class Logger {
     severe(message : string,arg1? : any,arg2? : any,arg3? : any,arg4? : any) {
         core.print(message);
     }
+    finest(message : string,arg1? : any,arg2? : any,arg3? : any,arg4? : any) {
+        core.print(message);
+    }
 }
 
 export class _Properties {
