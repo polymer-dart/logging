@@ -16,16 +16,19 @@ let Logger = Logger_1 = class Logger {
     _(name) {
         this.name = name;
     }
-    fine(message) {
+    fine(message, arg1, arg2, arg3, arg4) {
         core.print(message);
     }
-    info(message) {
+    info(message, arg1, arg2, arg3, arg4) {
         core.print(message);
     }
-    error(message) {
+    error(message, arg1, arg2, arg3, arg4) {
         core.print(message);
     }
-    debug(message) {
+    debug(message, arg1, arg2, arg3, arg4) {
+        core.print(message);
+    }
+    severe(message, arg1, arg2, arg3, arg4) {
         core.print(message);
     }
 };

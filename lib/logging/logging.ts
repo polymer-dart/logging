@@ -19,16 +19,19 @@ export class Logger {
         this.name = name;
     }
     static _ : new(name : string) => Logger;
-    fine(message : string) {
+    fine(message : string,arg1? : any,arg2? : any,arg3? : any,arg4? : any) {
         core.print(message);
     }
-    info(message : string) {
+    info(message : string,arg1? : any,arg2? : any,arg3? : any,arg4? : any) {
         core.print(message);
     }
-    error(message : string) {
+    error(message : string,arg1? : any,arg2? : any,arg3? : any,arg4? : any) {
         core.print(message);
     }
-    debug(message : string) {
+    debug(message : string,arg1? : any,arg2? : any,arg3? : any,arg4? : any) {
+        core.print(message);
+    }
+    severe(message : string,arg1? : any,arg2? : any,arg3? : any,arg4? : any) {
         core.print(message);
     }
 }

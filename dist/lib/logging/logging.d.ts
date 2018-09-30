@@ -4,10 +4,11 @@ export declare class Logger {
     static $Logger(name: string): Logger;
     _(name: string): void;
     static _: new (name: string) => Logger;
-    fine(message: string): void;
-    info(message: string): void;
-    error(message: string): void;
-    debug(message: string): void;
+    fine(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
+    info(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
+    error(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
+    debug(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
+    severe(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
 }
 export declare class _Properties {
 }
