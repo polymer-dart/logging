@@ -1,6 +1,6 @@
 {
-  "name": "@dart2ts.packages/logger",
-  "version": "1.0.0",
+  "name": "@dart2ts.packages/logging",
+  "version": "1.0.1",
   "description": "a test for it",
   "main": "lib/index.html",
   "flat": true,
