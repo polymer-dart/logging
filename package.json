@@ -1,0 +1,21 @@
+{
+  "name": "@dart2ts_packages/logger",
+  "version": "1.0.0",
+  "description": "a test for it",
+  "main": "lib/index.html",
+  "flat": true,
+  "scripts": {
+    "build": "tsc",
+    "serve": "python -m http.server 8000",
+    "publish_local": "npm publish --registry http://localhost:4873"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dart2ts/dart": "^0.1.5",
+    "reflect-metadata": "^0.1.12"
+  },
+  "devDependencies": {
+    "typescript": "^3.0.3"
+  }
+}
