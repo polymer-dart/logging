@@ -10,6 +10,7 @@ export declare class Logger {
     debug(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
     severe(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
     finest(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
+    warning(message: string, arg1?: any, arg2?: any, arg3?: any, arg4?: any): void;
 }
 export declare class _Properties {
 }

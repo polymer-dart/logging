@@ -34,6 +34,9 @@ let Logger = Logger_1 = class Logger {
     finest(message, arg1, arg2, arg3, arg4) {
         core.print(message);
     }
+    warning(message, arg1, arg2, arg3, arg4) {
+        core.print(message);
+    }
 };
 __decorate([
     namedConstructor
