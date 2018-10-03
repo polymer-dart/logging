@@ -1,6 +1,6 @@
 {
   "name": "@dart2ts.packages/logging",
-  "version": "0.11.2",
+  "version": "0.11.2-a",
   "description": "a test for it",
   "main": "lib/index.html",
   "flat": true,
@@ -12,8 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dart2ts/dart": "^0.1.5",
-    "reflect-metadata": "^0.1.12"
+    "@dart2ts/dart": "^0.1.8"
   },
   "devDependencies": {
     "typescript": "^3.0.3"

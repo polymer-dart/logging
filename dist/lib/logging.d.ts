@@ -21,18 +21,20 @@ export declare class Logger {
     readonly onRecord: async.DartStream<LogRecord>;
     clearListeners(): void;
     isLoggable(value: Level): boolean;
-    log(logLevel: Level, message: any, error?: any, stackTrace?: core.DartStackTrace, zone?: async.DartZone): void;
-    finest(message: any, error?: any, stackTrace?: core.DartStackTrace): void;
-    finer(message: any, error?: any, stackTrace?: core.DartStackTrace): void;
-    fine(message: any, error?: any, stackTrace?: core.DartStackTrace): void;
-    config(message: any, error?: any, stackTrace?: core.DartStackTrace): void;
-    info(message: any, error?: any, stackTrace?: core.DartStackTrace): void;
-    warning(message: any, error?: any, stackTrace?: core.DartStackTrace): void;
-    severe(message: any, error?: any, stackTrace?: core.DartStackTrace): void;
-    shout(message: any, error?: any, stackTrace?: core.DartStackTrace): void;
+    log(logLevel: Level, message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace, zone?: async.DartZone): void;
+    finest(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void;
+    finer(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void;
+    fine(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void;
+    config(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void;
+    info(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void;
+    warning(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void;
+    severe(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void;
+    shout(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void;
     _getStream(): async.DartStream<LogRecord>;
     _publish(record: LogRecord): void;
+    private static __$root;
     static root: Logger;
+    private static __$_loggers;
     static _loggers: core.DartMap<string, Logger>;
 }
 export declare class Level implements core.DartComparable<Level> {
@@ -40,17 +42,28 @@ export declare class Level implements core.DartComparable<Level> {
     value: number;
     constructor(name: string, value: number);
     Level(name: string, value: number): void;
-    static ALL: Level;
-    static OFF: Level;
-    static FINEST: Level;
-    static FINER: Level;
-    static FINE: Level;
-    static CONFIG: Level;
-    static INFO: Level;
-    static WARNING: Level;
-    static SEVERE: Level;
-    static SHOUT: Level;
-    static LEVELS: core.DartList<Level>;
+    private static __$ALL;
+    static readonly ALL: Level;
+    private static __$OFF;
+    static readonly OFF: Level;
+    private static __$FINEST;
+    static readonly FINEST: Level;
+    private static __$FINER;
+    static readonly FINER: Level;
+    private static __$FINE;
+    static readonly FINE: Level;
+    private static __$CONFIG;
+    static readonly CONFIG: Level;
+    private static __$INFO;
+    static readonly INFO: Level;
+    private static __$WARNING;
+    static readonly WARNING: Level;
+    private static __$SEVERE;
+    static readonly SEVERE: Level;
+    private static __$SHOUT;
+    static readonly SHOUT: Level;
+    private static __$LEVELS;
+    static readonly LEVELS: core.DartList<Level>;
     [OperatorMethods.EQUALS](other: any): boolean;
     [OperatorMethods.LT](other: Level): boolean;
     [OperatorMethods.LEQ](other: Level): boolean;
@@ -66,17 +79,20 @@ export declare class LogRecord {
     loggerName: string;
     time: core.DartDateTime;
     sequenceNumber: number;
+    private static __$_nextNumber;
     static _nextNumber: number;
-    error: any;
+    error: core.DartObject;
     stackTrace: core.DartStackTrace;
     zone: async.DartZone;
-    constructor(level: Level, message: string, loggerName: string, error?: any, stackTrace?: core.DartStackTrace, zone?: async.DartZone);
-    LogRecord(level: Level, message: string, loggerName: string, error?: any, stackTrace?: core.DartStackTrace, zone?: async.DartZone): void;
+    constructor(level: Level, message: string, loggerName: string, error?: core.DartObject, stackTrace?: core.DartStackTrace, zone?: async.DartZone);
+    LogRecord(level: Level, message: string, loggerName: string, error?: core.DartObject, stackTrace?: core.DartStackTrace, zone?: async.DartZone): void;
     toString(): string;
 }
-export declare class _Properties {
-    hierarchicalLoggingEnabled: boolean;
-    recordStackTraceAtLevel: Level;
-    _rootLevel: Level;
+export declare class properties {
+    private static __$hierarchicalLoggingEnabled;
+    static hierarchicalLoggingEnabled: boolean;
+    private static __$recordStackTraceAtLevel;
+    static recordStackTraceAtLevel: Level;
+    private static __$_rootLevel;
+    static _rootLevel: Level;
 }
-export declare const properties: _Properties;

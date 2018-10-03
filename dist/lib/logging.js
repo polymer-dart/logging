@@ -161,6 +161,24 @@ let Logger = Logger_1 = class Logger {
             this._controller.add(record);
         }
     }
+    static get root() {
+        if (this.__$root === undefined) {
+            this.__$root = new Logger_1('');
+        }
+        return this.__$root;
+    }
+    static set root(__$value) {
+        this.__$root = __$value;
+    }
+    static get _loggers() {
+        if (this.__$_loggers === undefined) {
+            this.__$_loggers = new core.DartMap.literal([]);
+        }
+        return this.__$_loggers;
+    }
+    static set _loggers(__$value) {
+        this.__$_loggers = __$value;
+    }
 };
 __decorate([
     namedConstructor
@@ -178,14 +196,78 @@ Logger = Logger_1 = __decorate([
     DartClass
 ], Logger);
 export { Logger };
-Logger.root = new Logger('');
-Logger._loggers = new core.DartMap.literal([]);
 let Level = Level_1 = class Level {
     constructor(name, value) {
     }
     Level(name, value) {
         this.name = name;
         this.value = value;
+    }
+    static get ALL() {
+        if (this.__$ALL === undefined) {
+            this.__$ALL = new Level_1('ALL', 0);
+        }
+        return this.__$ALL;
+    }
+    static get OFF() {
+        if (this.__$OFF === undefined) {
+            this.__$OFF = new Level_1('OFF', 2000);
+        }
+        return this.__$OFF;
+    }
+    static get FINEST() {
+        if (this.__$FINEST === undefined) {
+            this.__$FINEST = new Level_1('FINEST', 300);
+        }
+        return this.__$FINEST;
+    }
+    static get FINER() {
+        if (this.__$FINER === undefined) {
+            this.__$FINER = new Level_1('FINER', 400);
+        }
+        return this.__$FINER;
+    }
+    static get FINE() {
+        if (this.__$FINE === undefined) {
+            this.__$FINE = new Level_1('FINE', 500);
+        }
+        return this.__$FINE;
+    }
+    static get CONFIG() {
+        if (this.__$CONFIG === undefined) {
+            this.__$CONFIG = new Level_1('CONFIG', 700);
+        }
+        return this.__$CONFIG;
+    }
+    static get INFO() {
+        if (this.__$INFO === undefined) {
+            this.__$INFO = new Level_1('INFO', 800);
+        }
+        return this.__$INFO;
+    }
+    static get WARNING() {
+        if (this.__$WARNING === undefined) {
+            this.__$WARNING = new Level_1('WARNING', 900);
+        }
+        return this.__$WARNING;
+    }
+    static get SEVERE() {
+        if (this.__$SEVERE === undefined) {
+            this.__$SEVERE = new Level_1('SEVERE', 1000);
+        }
+        return this.__$SEVERE;
+    }
+    static get SHOUT() {
+        if (this.__$SHOUT === undefined) {
+            this.__$SHOUT = new Level_1('SHOUT', 1200);
+        }
+        return this.__$SHOUT;
+    }
+    static get LEVELS() {
+        if (this.__$LEVELS === undefined) {
+            this.__$LEVELS = new core.DartList.literal(Level_1.ALL, Level_1.FINEST, Level_1.FINER, Level_1.FINE, Level_1.CONFIG, Level_1.INFO, Level_1.WARNING, Level_1.SEVERE, Level_1.SHOUT, Level_1.OFF);
+        }
+        return this.__$LEVELS;
     }
     [OperatorMethods.EQUALS](other) {
         return is(other, Level_1) && this.value == other.value;
@@ -220,19 +302,17 @@ Level = Level_1 = __decorate([
     Implements(core.DartComparable)
 ], Level);
 export { Level };
-Level.ALL = new Level('ALL', 0);
-Level.OFF = new Level('OFF', 2000);
-Level.FINEST = new Level('FINEST', 300);
-Level.FINER = new Level('FINER', 400);
-Level.FINE = new Level('FINE', 500);
-Level.CONFIG = new Level('CONFIG', 700);
-Level.INFO = new Level('INFO', 800);
-Level.WARNING = new Level('WARNING', 900);
-Level.SEVERE = new Level('SEVERE', 1000);
-Level.SHOUT = new Level('SHOUT', 1200);
-Level.LEVELS = new core.DartList.literal(Level.ALL, Level.FINEST, Level.FINER, Level.FINE, Level.CONFIG, Level.INFO, Level.WARNING, Level.SEVERE, Level.SHOUT, Level.OFF);
 let LogRecord = LogRecord_1 = class LogRecord {
     constructor(level, message, loggerName, error, stackTrace, zone) {
+    }
+    static get _nextNumber() {
+        if (this.__$_nextNumber === undefined) {
+            this.__$_nextNumber = 0;
+        }
+        return this.__$_nextNumber;
+    }
+    static set _nextNumber(__$value) {
+        this.__$_nextNumber = __$value;
     }
     LogRecord(level, message, loggerName, error, stackTrace, zone) {
         this.time = new core.DartDateTime.now();
@@ -255,13 +335,33 @@ LogRecord = LogRecord_1 = __decorate([
     DartClass
 ], LogRecord);
 export { LogRecord };
-LogRecord._nextNumber = 0;
-export class _Properties {
-    constructor() {
-        this.hierarchicalLoggingEnabled = false;
-        this.recordStackTraceAtLevel = Level.OFF;
-        this._rootLevel = Level.INFO;
+export class properties {
+    static get hierarchicalLoggingEnabled() {
+        if (this.__$hierarchicalLoggingEnabled === undefined) {
+            this.__$hierarchicalLoggingEnabled = false;
+        }
+        return this.__$hierarchicalLoggingEnabled;
+    }
+    static set hierarchicalLoggingEnabled(__$value) {
+        this.__$hierarchicalLoggingEnabled = __$value;
+    }
+    static get recordStackTraceAtLevel() {
+        if (this.__$recordStackTraceAtLevel === undefined) {
+            this.__$recordStackTraceAtLevel = Level.OFF;
+        }
+        return this.__$recordStackTraceAtLevel;
+    }
+    static set recordStackTraceAtLevel(__$value) {
+        this.__$recordStackTraceAtLevel = __$value;
+    }
+    static get _rootLevel() {
+        if (this.__$_rootLevel === undefined) {
+            this.__$_rootLevel = Level.INFO;
+        }
+        return this.__$_rootLevel;
+    }
+    static set _rootLevel(__$value) {
+        this.__$_rootLevel = __$value;
     }
 }
-export const properties = new _Properties();
 //# sourceMappingURL=logging.js.map

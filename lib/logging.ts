@@ -1,6 +1,6 @@
 /** Library asset:logging/lib/logging.dart */
-import {is,isNot,equals} from "@dart2ts/dart/_common";
-import {defaultConstructor,namedConstructor,namedFactory,defaultFactory,DartClass,Implements,With,op,Op,OperatorMethods,DartClassAnnotation,DartMethodAnnotation,DartPropertyAnnotation,Abstract,AbstractProperty,int,bool,double} from "@dart2ts/dart/utils";
+import { is, isNot, equals } from "@dart2ts/dart/_common";
+import { defaultConstructor, namedConstructor, namedFactory, defaultFactory, DartClass, Implements, With, op, Op, OperatorMethods, DartClassAnnotation, DartMethodAnnotation, DartPropertyAnnotation, Abstract, AbstractProperty, int, bool, double } from "@dart2ts/dart/utils";
 import * as _common from "@dart2ts/dart/_common";
 import * as core from "@dart2ts/dart/core";
 import * as async from "@dart2ts/dart/async";
@@ -8,235 +8,330 @@ import * as collection from "@dart2ts/dart/core";
 
 @DartClass
 export class Logger {
-    name : string;
-    get fullName() : string {
-        return (op(Op.EQUALS,this.parent,null) || this.parent.name == '') ? this.name : `${this.parent.fullName}.${this.name}`;
+    name: string;
+    get fullName(): string {
+        return (op(Op.EQUALS, this.parent, null) || this.parent.name == '') ? this.name : `${this.parent.fullName}.${this.name}`;
     }
-    parent : Logger;
-    _level : Level;
-    _children : core.DartMap<string,Logger>;
-    children : core.DartMap<string,Logger>;
-    _controller : async.DartStreamController<LogRecord>;
-    constructor(name : string) {
+    parent: Logger;
+    _level: Level;
+    _children: core.DartMap<string, Logger>;
+    children: core.DartMap<string, Logger>;
+    _controller: async.DartStreamController<LogRecord>;
+    constructor(name: string) {
     }
     @defaultFactory
-    static $Logger(name : string) : Logger {
-        return Logger._loggers.putIfAbsent(name,() =>  {
+    static $Logger(name: string): Logger {
+        return Logger._loggers.putIfAbsent(name, () => {
             return new Logger._named(name);
         });
     }
     @namedFactory
-    static $detached(name : string) : Logger {
-        return new Logger._internal(name,null,new core.DartMap<string,Logger>());
+    static $detached(name: string): Logger {
+        return new Logger._internal(name, null, new core.DartMap<string, Logger>());
     }
-    static detached : new(name : string) => Logger;
+    static detached: new (name: string) => Logger;
     @namedFactory
-    static $_named(name : string) : Logger {
+    static $_named(name: string): Logger {
         if (new core.DartString(name).startsWith(new core.DartString('.'))) {
             throw new core.ArgumentError("name shouldn't start with a '.'");
         }
-        let dot : number = new core.DartString(name).lastIndexOf(new core.DartString('.'));
-        let parent : Logger = null;
-        let thisName : string;
+        let dot: number = new core.DartString(name).lastIndexOf(new core.DartString('.'));
+        let parent: Logger = null;
+        let thisName: string;
         if (dot == -1) {
             if (name != '') parent = new Logger('');
             thisName = name;
-        }else {
-            parent = new Logger(new core.DartString(name).substring(0,dot));
+        } else {
+            parent = new Logger(new core.DartString(name).substring(0, dot));
             thisName = new core.DartString(name).substring(dot + 1);
         }
-        return new Logger._internal(thisName,parent,new core.DartMap<string,Logger>());
+        return new Logger._internal(thisName, parent, new core.DartMap<string, Logger>());
     }
-    static _named : new(name : string) => Logger;
+    static _named: new (name: string) => Logger;
     @namedConstructor
-    _internal(name : string,parent : Logger,children : core.DartMap<string,Logger>) {
+    _internal(name: string, parent: Logger, children: core.DartMap<string, Logger>) {
         this._children = children;
-        this.children = new core.DartUnmodifiableMapView<any,any>(children);
+        this.children = new core.DartUnmodifiableMapView<any, any>(children);
         this.name = name;
         this.parent = parent;
-        if (this.parent != null) this.parent._children.set(this.name,this);
+        if (this.parent != null) this.parent._children.set(this.name, this);
     }
-    static _internal : new(name : string,parent : Logger,children : core.DartMap<string,Logger>) => Logger;
-    get level() : Level {
+    static _internal: new (name: string, parent: Logger, children: core.DartMap<string, Logger>) => Logger;
+    get level(): Level {
         if (properties.hierarchicalLoggingEnabled) {
             if (this._level != null) return this._level;
             if (this.parent != null) return this.parent.level;
         }
         return properties._rootLevel;
     }
-    set level(value : Level) {
+    set level(value: Level) {
         if (properties.hierarchicalLoggingEnabled && this.parent != null) {
             this._level = value;
-        }else {
+        } else {
             if (this.parent != null) {
                 throw new core.UnsupportedError('Please set "hierarchicalLoggingEnabled" to true if you want to ' + 'change the level on a non-root logger.');
             }
             properties._rootLevel = value;
         }
     }
-    get onRecord() : async.DartStream<LogRecord> {
+    get onRecord(): async.DartStream<LogRecord> {
         return this._getStream();
     }
-    clearListeners() : void {
-        if (properties.hierarchicalLoggingEnabled || op(Op.EQUALS,this.parent,null)) {
+    clearListeners(): void {
+        if (properties.hierarchicalLoggingEnabled || op(Op.EQUALS, this.parent, null)) {
             if (this._controller != null) {
                 this._controller.close();
                 this._controller = null;
             }
-        }else {
+        } else {
             Logger.root.clearListeners();
         }
     }
-    isLoggable(value : Level) : boolean {
-        return (op(Op.GEQ,value,this.level));
+    isLoggable(value: Level): boolean {
+        return (op(Op.GEQ, value, this.level));
     }
-    log(logLevel : Level,message : any,error? : any,stackTrace? : core.DartStackTrace,zone? : async.DartZone) : void {
+    log(logLevel: Level, message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace, zone?: async.DartZone): void {
         if (this.isLoggable(logLevel)) {
             if (is(message, Function)) message = message();
             if (isNot(message, "string")) message = message.toString();
-            if (op(Op.EQUALS,stackTrace,null) && op(Op.GEQ,logLevel,properties.recordStackTraceAtLevel)) {
+            if (op(Op.EQUALS, stackTrace, null) && op(Op.GEQ, logLevel, properties.recordStackTraceAtLevel)) {
                 try {
                     throw `autogenerated stack trace for ${logLevel} ${message}`;
                 } catch (e) {
-                    let t : core.DartStackTrace = new core.DartStackTrace.fromError(e);
+                    let t: core.DartStackTrace = new core.DartStackTrace.fromError(e);
                     stackTrace = t;
-                    if (op(Op.EQUALS,error,null)) error = e;
+                    if (op(Op.EQUALS, error, null)) error = e;
                 }
             }
-            if (op(Op.EQUALS,zone,null)) zone = async.DartZone.current;
-            let record = new LogRecord(logLevel,message,this.fullName,error,stackTrace,zone);
+            if (op(Op.EQUALS, zone, null)) zone = async.DartZone.current;
+            let record = new LogRecord(logLevel, message, this.fullName, error, stackTrace, zone);
             if (properties.hierarchicalLoggingEnabled) {
-                let target:Logger = this;
-                while (target != null){
+                let target: Logger = this;
+                while (target != null) {
                     target._publish(record);
                     target = target.parent;
                 }
-            }else {
+            } else {
                 Logger.root._publish(record);
             }
         }
     }
-    finest(message : any,error? : any,stackTrace? : core.DartStackTrace) : void {
-        return this.log(Level.FINEST,message,error,stackTrace);
+    finest(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void {
+        return this.log(Level.FINEST, message, error, stackTrace);
     }
-    finer(message : any,error? : any,stackTrace? : core.DartStackTrace) : void {
-        return this.log(Level.FINER,message,error,stackTrace);
+    finer(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void {
+        return this.log(Level.FINER, message, error, stackTrace);
     }
-    fine(message : any,error? : any,stackTrace? : core.DartStackTrace) : void {
-        return this.log(Level.FINE,message,error,stackTrace);
+    fine(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void {
+        return this.log(Level.FINE, message, error, stackTrace);
     }
-    config(message : any,error? : any,stackTrace? : core.DartStackTrace) : void {
-        return this.log(Level.CONFIG,message,error,stackTrace);
+    config(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void {
+        return this.log(Level.CONFIG, message, error, stackTrace);
     }
-    info(message : any,error? : any,stackTrace? : core.DartStackTrace) : void {
-        return this.log(Level.INFO,message,error,stackTrace);
+    info(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void {
+        return this.log(Level.INFO, message, error, stackTrace);
     }
-    warning(message : any,error? : any,stackTrace? : core.DartStackTrace) : void {
-        return this.log(Level.WARNING,message,error,stackTrace);
+    warning(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void {
+        return this.log(Level.WARNING, message, error, stackTrace);
     }
-    severe(message : any,error? : any,stackTrace? : core.DartStackTrace) : void {
-        return this.log(Level.SEVERE,message,error,stackTrace);
+    severe(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void {
+        return this.log(Level.SEVERE, message, error, stackTrace);
     }
-    shout(message : any,error? : any,stackTrace? : core.DartStackTrace) : void {
-        return this.log(Level.SHOUT,message,error,stackTrace);
+    shout(message: any, error?: core.DartObject, stackTrace?: core.DartStackTrace): void {
+        return this.log(Level.SHOUT, message, error, stackTrace);
     }
-    _getStream() : async.DartStream<LogRecord> {
-        if (properties.hierarchicalLoggingEnabled || op(Op.EQUALS,this.parent,null)) {
-            if (op(Op.EQUALS,this._controller,null)) {
+    _getStream(): async.DartStream<LogRecord> {
+        if (properties.hierarchicalLoggingEnabled || op(Op.EQUALS, this.parent, null)) {
+            if (op(Op.EQUALS, this._controller, null)) {
                 this._controller = new async.DartStreamController.broadcast({
-                    sync : true});
+                    sync: true
+                });
             }
             return this._controller.stream;
-        }else {
+        } else {
             return Logger.root._getStream();
         }
     }
-    _publish(record : LogRecord) : void {
+    _publish(record: LogRecord): void {
         if (this._controller != null) {
             this._controller.add(record);
         }
     }
-    static root : Logger;
-    static _loggers : core.DartMap<string,Logger>;
+    private static __$root: Logger;
+    static get root(): Logger {
+        if (this.__$root === undefined) {
+            this.__$root = new Logger('');
+        }
+        return this.__$root;
+    }
+    static set root(__$value: Logger) {
+        this.__$root = __$value;
+    }
+
+    private static __$_loggers: core.DartMap<string, Logger>;
+    static get _loggers(): core.DartMap<string, Logger> {
+        if (this.__$_loggers === undefined) {
+            this.__$_loggers = new core.DartMap.literal([]);
+        }
+        return this.__$_loggers;
+    }
+    static set _loggers(__$value: core.DartMap<string, Logger>) {
+        this.__$_loggers = __$value;
+    }
+
 }
-Logger.root = new Logger('');
-Logger._loggers = new core.DartMap.literal([]);
 
 @DartClass
 @Implements(core.DartComparable)
 export class Level implements core.DartComparable<Level> {
-    name : string;
-    value : number;
-    constructor(name : string,value : number) {
+    name: string;
+    value: number;
+    constructor(name: string, value: number) {
     }
     @defaultConstructor
-    Level(name : string,value : number) {
+    Level(name: string, value: number) {
         this.name = name;
         this.value = value;
     }
-    static ALL : Level;
-    static OFF : Level;
-    static FINEST : Level;
-    static FINER : Level;
-    static FINE : Level;
-    static CONFIG : Level;
-    static INFO : Level;
-    static WARNING : Level;
-    static SEVERE : Level;
-    static SHOUT : Level;
-    static LEVELS : core.DartList<Level>;
-    [OperatorMethods.EQUALS](other : any) : boolean {
+    private static __$ALL: Level;
+    static get ALL(): Level {
+        if (this.__$ALL === undefined) {
+            this.__$ALL = new Level('ALL', 0);
+        }
+        return this.__$ALL;
+    }
+
+    private static __$OFF: Level;
+    static get OFF(): Level {
+        if (this.__$OFF === undefined) {
+            this.__$OFF = new Level('OFF', 2000);
+        }
+        return this.__$OFF;
+    }
+
+    private static __$FINEST: Level;
+    static get FINEST(): Level {
+        if (this.__$FINEST === undefined) {
+            this.__$FINEST = new Level('FINEST', 300);
+        }
+        return this.__$FINEST;
+    }
+
+    private static __$FINER: Level;
+    static get FINER(): Level {
+        if (this.__$FINER === undefined) {
+            this.__$FINER = new Level('FINER', 400);
+        }
+        return this.__$FINER;
+    }
+
+    private static __$FINE: Level;
+    static get FINE(): Level {
+        if (this.__$FINE === undefined) {
+            this.__$FINE = new Level('FINE', 500);
+        }
+        return this.__$FINE;
+    }
+
+    private static __$CONFIG: Level;
+    static get CONFIG(): Level {
+        if (this.__$CONFIG === undefined) {
+            this.__$CONFIG = new Level('CONFIG', 700);
+        }
+        return this.__$CONFIG;
+    }
+
+    private static __$INFO: Level;
+    static get INFO(): Level {
+        if (this.__$INFO === undefined) {
+            this.__$INFO = new Level('INFO', 800);
+        }
+        return this.__$INFO;
+    }
+
+    private static __$WARNING: Level;
+    static get WARNING(): Level {
+        if (this.__$WARNING === undefined) {
+            this.__$WARNING = new Level('WARNING', 900);
+        }
+        return this.__$WARNING;
+    }
+
+    private static __$SEVERE: Level;
+    static get SEVERE(): Level {
+        if (this.__$SEVERE === undefined) {
+            this.__$SEVERE = new Level('SEVERE', 1000);
+        }
+        return this.__$SEVERE;
+    }
+
+    private static __$SHOUT: Level;
+    static get SHOUT(): Level {
+        if (this.__$SHOUT === undefined) {
+            this.__$SHOUT = new Level('SHOUT', 1200);
+        }
+        return this.__$SHOUT;
+    }
+
+    private static __$LEVELS: core.DartList<Level>;
+    static get LEVELS(): core.DartList<Level> {
+        if (this.__$LEVELS === undefined) {
+            this.__$LEVELS = new core.DartList.literal(Level.ALL, Level.FINEST, Level.FINER, Level.FINE, Level.CONFIG, Level.INFO, Level.WARNING, Level.SEVERE, Level.SHOUT, Level.OFF);
+        }
+        return this.__$LEVELS;
+    }
+
+    [OperatorMethods.EQUALS](other: any): boolean {
         return is(other, Level) && this.value == other.value;
     }
-    [OperatorMethods.LT](other : Level) : boolean {
+    [OperatorMethods.LT](other: Level): boolean {
         return this.value < other.value;
     }
-    [OperatorMethods.LEQ](other : Level) : boolean {
+    [OperatorMethods.LEQ](other: Level): boolean {
         return this.value <= other.value;
     }
-    [OperatorMethods.GT](other : Level) : boolean {
+    [OperatorMethods.GT](other: Level): boolean {
         return this.value > other.value;
     }
-    [OperatorMethods.GEQ](other : Level) : boolean {
+    [OperatorMethods.GEQ](other: Level): boolean {
         return this.value >= other.value;
     }
-    compareTo(other : Level) : number {
+    compareTo(other: Level): number {
         return this.value - other.value;
     }
-    get hashCode() : number {
+    get hashCode(): number {
         return this.value;
     }
-    toString() : string {
+    toString(): string {
         return this.name;
     }
 }
-Level.ALL = new Level('ALL',0);
-Level.OFF = new Level('OFF',2000);
-Level.FINEST = new Level('FINEST',300);
-Level.FINER = new Level('FINER',400);
-Level.FINE = new Level('FINE',500);
-Level.CONFIG = new Level('CONFIG',700);
-Level.INFO = new Level('INFO',800);
-Level.WARNING = new Level('WARNING',900);
-Level.SEVERE = new Level('SEVERE',1000);
-Level.SHOUT = new Level('SHOUT',1200);
-Level.LEVELS = new core.DartList.literal(Level.ALL,Level.FINEST,Level.FINER,Level.FINE,Level.CONFIG,Level.INFO,Level.WARNING,Level.SEVERE,Level.SHOUT,Level.OFF);
 
 @DartClass
 export class LogRecord {
-    level : Level;
-    message : string;
-    loggerName : string;
-    time : core.DartDateTime;
-    sequenceNumber : number;
-    static _nextNumber : number;
-    error : any;
-    stackTrace : core.DartStackTrace;
-    zone : async.DartZone;
-    constructor(level : Level,message : string,loggerName : string,error? : any,stackTrace? : core.DartStackTrace,zone? : async.DartZone) {
+    level: Level;
+    message: string;
+    loggerName: string;
+    time: core.DartDateTime;
+    sequenceNumber: number;
+    private static __$_nextNumber: number;
+    static get _nextNumber(): number {
+        if (this.__$_nextNumber === undefined) {
+            this.__$_nextNumber = 0;
+        }
+        return this.__$_nextNumber;
+    }
+    static set _nextNumber(__$value: number) {
+        this.__$_nextNumber = __$value;
+    }
+
+    error: core.DartObject;
+    stackTrace: core.DartStackTrace;
+    zone: async.DartZone;
+    constructor(level: Level, message: string, loggerName: string, error?: core.DartObject, stackTrace?: core.DartStackTrace, zone?: async.DartZone) {
     }
     @defaultConstructor
-    LogRecord(level : Level,message : string,loggerName : string,error? : any,stackTrace? : core.DartStackTrace,zone? : async.DartZone) {
+    LogRecord(level: Level, message: string, loggerName: string, error?: core.DartObject, stackTrace?: core.DartStackTrace, zone?: async.DartZone) {
         this.time = new core.DartDateTime.now();
         this.sequenceNumber = LogRecord._nextNumber++;
         this.level = level;
@@ -246,15 +341,43 @@ export class LogRecord {
         this.stackTrace = stackTrace;
         this.zone = zone;
     }
-    toString() : string {
+    toString(): string {
         return `[${this.level.name}] ${this.loggerName}: ${this.message}`;
     }
 }
-LogRecord._nextNumber = 0;
 
-export class _Properties {
-    hierarchicalLoggingEnabled : boolean = false;
-    recordStackTraceAtLevel : Level = Level.OFF;
-    _rootLevel : Level = Level.INFO;
+export class properties {
+    private static __$hierarchicalLoggingEnabled: boolean;
+    static get hierarchicalLoggingEnabled(): boolean {
+        if (this.__$hierarchicalLoggingEnabled === undefined) {
+            this.__$hierarchicalLoggingEnabled = false;
+        }
+        return this.__$hierarchicalLoggingEnabled;
+    }
+    static set hierarchicalLoggingEnabled(__$value: boolean) {
+        this.__$hierarchicalLoggingEnabled = __$value;
+    }
+
+    private static __$recordStackTraceAtLevel: Level;
+    static get recordStackTraceAtLevel(): Level {
+        if (this.__$recordStackTraceAtLevel === undefined) {
+            this.__$recordStackTraceAtLevel = Level.OFF;
+        }
+        return this.__$recordStackTraceAtLevel;
+    }
+    static set recordStackTraceAtLevel(__$value: Level) {
+        this.__$recordStackTraceAtLevel = __$value;
+    }
+
+    private static __$_rootLevel: Level;
+    static get _rootLevel(): Level {
+        if (this.__$_rootLevel === undefined) {
+            this.__$_rootLevel = Level.INFO;
+        }
+        return this.__$_rootLevel;
+    }
+    static set _rootLevel(__$value: Level) {
+        this.__$_rootLevel = __$value;
+    }
+
 }
-export const properties : _Properties = new _Properties();
